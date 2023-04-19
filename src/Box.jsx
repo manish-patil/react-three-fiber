@@ -18,6 +18,8 @@ export default function Box(props) {
       ref={ref}
       onPointerDown={() => setRotate(!rotate)}
       geometry={geometry}
+      castShadow
+      receiveShadow
     >
       {/* <meshBasicMaterial color={'lime'} wireframe={props.wireframe} /> */}
       <meshPhongMaterial color={'lime'} wireframe={props.wireframe} />
