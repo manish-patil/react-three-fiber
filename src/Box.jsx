@@ -4,8 +4,18 @@ import * as THREE from 'three';
 
 export default function Box(props) {
   const ref = useRef();
+
   const [rotate, setRotate] = useState(false);
   const geometry = useMemo(() => new THREE.BoxGeometry(), []);
+  const material = useMemo(
+    () =>
+      new THREE.MeshPhongMaterial({
+        color: 'lime',
+        toneMapped: false,
+        wireframe: props.wireframe || false,
+      }),
+    [props.wireframe]
+  );
 
   useFrame((_, delta) => {
     ref.current.rotation.x += delta * rotate;
@@ -18,11 +28,10 @@ export default function Box(props) {
       ref={ref}
       onPointerDown={() => setRotate(!rotate)}
       geometry={geometry}
+      material={material}
       castShadow
       receiveShadow
     >
-      {/* <meshBasicMaterial color={'lime'} wireframe={props.wireframe} /> */}
-      <meshPhongMaterial color={'lime'} wireframe={props.wireframe} />
       <axesHelper args={[1]} />
     </mesh>
   );
