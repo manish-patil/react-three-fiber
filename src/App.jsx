@@ -4,6 +4,7 @@ import { Canvas, useFrame, extend } from '@react-three/fiber';
 import { Stats, OrbitControls, useHelper, Effects } from '@react-three/drei';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import Box from './Box';
+import Balls from './Balls';
 
 extend({ UnrealBloomPass });
 
@@ -18,86 +19,6 @@ const Light = ({ position, color }) => {
       color={color}
       castShadow
     ></directionalLight>
-  );
-};
-
-const ballPositions = () => {
-  const positions = [];
-  for (let i = 0; i < 5; i++) {
-    positions.push([0, 10, 5]);
-  }
-
-  return positions;
-};
-
-const Balls = () => {
-  const [balls, setBalls] = useState([]);
-
-  useEffect(() => {
-    setBalls(
-      ballPositions().map((pos, idx) => ({
-        idx: idx,
-        position: pos,
-        go: idx === ballPositions().length - 1,
-      }))
-    );
-  }, []);
-
-  const handleOnBallEnd = () => {
-    setBalls((prev) => {
-      prev.pop();
-
-      return prev.map((ball, idx) => {
-        return {
-          ...ball,
-          go: idx === prev.length - 1,
-        };
-      });
-    });
-  };
-
-  return (
-    <>
-      {balls?.map((ball) => {
-        return (
-          <Ball
-            key={ball.idx}
-            position={ball.position}
-            go={ball.go}
-            onEnd={handleOnBallEnd}
-          />
-        );
-      })}
-    </>
-  );
-};
-
-const Ball = ({ position, go, onEnd }) => {
-  const radius = 0.5;
-  const ref = useRef();
-  const ball = useMemo(() => new THREE.SphereGeometry(radius), []);
-
-  useFrame((_, delta) => {
-    if (go === true) {
-      ref.current.position.y -= delta;
-      if (ref.current.position.y < -radius) {
-        ref.current.visible = false;
-        onEnd();
-      }
-    }
-  });
-
-  return (
-    <mesh
-      ref={ref}
-      castShadow
-      receiveShadow
-      geometry={ball}
-      position={position}
-    >
-      <meshBasicMaterial side={2} color={[0.1, 2, 4]} toneMapped={false} />
-      <axesHelper args={[1]} />
-    </mesh>
   );
 };
 
